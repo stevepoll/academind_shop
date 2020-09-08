@@ -1,11 +1,13 @@
-import 'package:academind_shop/pages/cart_page.dart';
-import 'package:academind_shop/pages/orders_page.dart';
-import 'package:academind_shop/pages/product_detail_page.dart';
-import 'package:academind_shop/providers/cart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:academind_shop/pages/cart_page.dart';
+import 'package:academind_shop/pages/edit_product_page.dart';
+import 'package:academind_shop/pages/orders_page.dart';
+import 'package:academind_shop/pages/product_detail_page.dart';
+import 'package:academind_shop/pages/manage_products_page.dart';
+import 'package:academind_shop/providers/cart.dart';
 import 'package:academind_shop/providers/orders.dart';
 import 'package:academind_shop/providers/products.dart';
 import 'package:academind_shop/pages/products_overview_page.dart';
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
           ProductDetailPage.routeName: (ctx) => ProductDetailPage(),
           CartPage.routeName: (ctx) => CartPage(),
           OrdersPage.routeName: (ctx) => OrdersPage(),
+          ManageProductsPage.routeName: (ctx) => ManageProductsPage(),
+          EditProductPage.routeName: (ctx) => EditProductPage(),
         },
       ),
     );

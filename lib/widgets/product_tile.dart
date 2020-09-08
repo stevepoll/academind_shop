@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class ProductTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
+    final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context, listen: false);
 
     return ClipRRect(
@@ -27,7 +27,8 @@ class ProductTile extends StatelessWidget {
         ),
         footer: GridTileBar(
           leading: IconButton(
-            icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border),
+            icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border),
             color: Theme.of(context).accentColor,
             onPressed: () {
               product.toggleFavorite();
@@ -38,6 +39,20 @@ class ProductTile extends StatelessWidget {
             color: Theme.of(context).accentColor,
             onPressed: () {
               cart.addItem(product.id, product.price, product.title);
+              Scaffold.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text('Added item to cart'),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        cart.removeSingleItem(product.id);
+                      },
+                    ),
+                    duration: Duration(milliseconds: 2200),
+                  ),
+                );
             },
           ),
           backgroundColor: Colors.black45,

@@ -14,10 +14,31 @@ class Product with ChangeNotifier {
     @required this.description,
     @required this.price,
     @required this.imageUrl,
-  }) : isFavorite = false;
+    this.isFavorite = false,
+  });
 
   void toggleFavorite() {
     isFavorite = !isFavorite;
     notifyListeners();
+  }
+
+  Product copyWith({
+    String id,
+    String title,
+    String description,
+    double price,
+    String imageUrl,
+    bool isFavorite,
+  }) {
+    var prod = Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+
+    return prod;
   }
 }

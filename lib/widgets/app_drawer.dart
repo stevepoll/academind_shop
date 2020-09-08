@@ -1,4 +1,5 @@
 import 'package:academind_shop/pages/orders_page.dart';
+import 'package:academind_shop/pages/manage_products_page.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -21,7 +22,15 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.payment),
             title: Text('Orders'),
-            onTap: () => Navigator.pushReplacementNamed(context, OrdersPage.routeName),
+            onTap: () =>
+                Navigator.pushReplacementNamed(context, OrdersPage.routeName),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Manage Products'),
+            onTap: () => Navigator.pushReplacementNamed(
+                context, ManageProductsPage.routeName),
           ),
         ],
       ),
