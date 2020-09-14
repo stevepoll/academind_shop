@@ -1,3 +1,4 @@
+import 'package:academind_shop/providers/products.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -20,6 +21,20 @@ class ProductsOverviewPage extends StatefulWidget {
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   var _showFavorites = false;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    _isLoading = true;
+    Future.delayed(Duration.zero, () {
+      Provider.of<Products>(context, listen: false).fetchProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +53,9 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
               });
             },
             itemBuilder: (_) => [
-              PopupMenuItem(child: Text('Only Favorites'), value: FilterOptions.Favorites),
+              PopupMenuItem(
+                  child: Text('Only Favorites'),
+                  value: FilterOptions.Favorites),
               PopupMenuItem(child: Text('Show All'), value: FilterOptions.All),
             ],
             icon: Icon(Icons.more_vert),
@@ -57,7 +74,9 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
         ],
       ),
-      body: ProductsGrid(_showFavorites),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ProductsGrid(_showFavorites),
       drawer: AppDrawer(),
     );
   }

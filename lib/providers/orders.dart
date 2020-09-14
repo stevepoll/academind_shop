@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:academind_shop/models/http_exception.dart';
 import 'package:academind_shop/providers/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Order {
   final String id;
@@ -13,24 +17,70 @@ class Order {
     @required this.cartItems,
     @required this.dateTime,
   });
+
+  Order.fromJson(String key, Map<String, dynamic> jsonMap)
+      : id = key,
+        amount = jsonMap['amount'] as double,
+        dateTime = DateTime.parse(jsonMap['dateTime']),
+        cartItems = (jsonMap['cartItems'] as List<dynamic>)
+            .map((e) => CartItem.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+  Map<String, dynamic> toJson() => {
+        'amount': amount,
+        'cartItems': cartItems != null
+            ? cartItems.map((e) => e.toJson()).toList()
+            : null,
+        'dateTime': dateTime.toIso8601String(),
+      };
 }
 
 class Orders with ChangeNotifier {
+  static const ORDERS_URL =
+      'https://academind-flutter-shop.firebaseio.com/orders';
+
   List<Order> _orders = [];
 
   List<Order> get orders {
     return [..._orders];
   }
 
-  void addOrder(List<CartItem> cartItems, double amount) {
-    _orders.add(
-      Order(
-        id: DateTime.now().toString(),
-        amount: amount,
-        dateTime: DateTime.now(),
-        cartItems: cartItems,
-      ),
+  Future<void> addOrder(List<CartItem> cartItems, double amount) async {
+    final newOrder = Order(
+      id: null,
+      amount: amount,
+      dateTime: DateTime.now(),
+      cartItems: cartItems,
     );
-    notifyListeners();
+
+    final response =
+        await http.post('$ORDERS_URL.json', body: json.encode(newOrder));
+    if (response.statusCode > 400) {
+      throw HttpException('Error adding order');
+    } else {
+      _orders.add(newOrder);
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchOrders() async {
+    List<Order> fetchedOrders = [];
+
+    try {
+      final response = await http.get('$ORDERS_URL.json');
+      Map<String, dynamic> data = json.decode(response.body);
+
+      if (data != null) {
+        data.entries.forEach((order) {
+          fetchedOrders.add(Order.fromJson(order.key, order.value));
+        });
+
+        _orders = fetchedOrders.reversed.toList();
+        notifyListeners();
+      }
+    } on HttpException catch (e) {
+      print(e);
+      throw HttpException('Error fetching orders');
+    }
   }
 }
