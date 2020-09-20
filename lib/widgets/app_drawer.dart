@@ -1,6 +1,8 @@
 import 'package:academind_shop/pages/orders_page.dart';
 import 'package:academind_shop/pages/manage_products_page.dart';
+import 'package:academind_shop/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -32,6 +34,15 @@ class AppDrawer extends StatelessWidget {
             onTap: () => Navigator.pushReplacementNamed(
                 context, ManageProductsPage.routeName),
           ),
+          Divider(),
+          ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Log out'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/');
+                Provider.of<Auth>(context, listen: false).logout();
+              }),
         ],
       ),
     );

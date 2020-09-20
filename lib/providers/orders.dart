@@ -36,13 +36,20 @@ class Order {
 }
 
 class Orders with ChangeNotifier {
-  static const ORDERS_URL =
-      'https://academind-flutter-shop.firebaseio.com/orders';
+  static const BASE_URL = 'https://academind-flutter-shop.firebaseio.com';
 
   List<Order> _orders = [];
+  final String userId;
+  final String authToken;
+
+  Orders(this.authToken, this.userId, this._orders);
 
   List<Order> get orders {
     return [..._orders];
+  }
+
+  String get url {
+    return '$BASE_URL/orders/$userId.json?auth=$authToken';
   }
 
   Future<void> addOrder(List<CartItem> cartItems, double amount) async {
@@ -53,8 +60,7 @@ class Orders with ChangeNotifier {
       cartItems: cartItems,
     );
 
-    final response =
-        await http.post('$ORDERS_URL.json', body: json.encode(newOrder));
+    final response = await http.post(url, body: json.encode(newOrder));
     if (response.statusCode > 400) {
       throw HttpException('Error adding order');
     } else {
@@ -67,7 +73,7 @@ class Orders with ChangeNotifier {
     List<Order> fetchedOrders = [];
 
     try {
-      final response = await http.get('$ORDERS_URL.json');
+      final response = await http.get(url);
       Map<String, dynamic> data = json.decode(response.body);
 
       if (data != null) {

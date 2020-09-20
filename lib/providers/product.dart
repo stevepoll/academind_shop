@@ -24,43 +24,6 @@ class Product with ChangeNotifier {
   static const PRODUCTS_URL =
       'https://academind-flutter-shop.firebaseio.com/products';
 
-  Product.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        title = json['title'],
-        description = json['description'],
-        price = json['price'],
-        imageUrl = json['imageUrl'],
-        isFavorite = json['isFavorite'];
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'description': description,
-        'price': price,
-        'imageUrl': imageUrl,
-        'isFavorite': isFavorite,
-      };
-
-  Future<void> toggleFavorite() async {
-    final oldStatus = isFavorite;
-
-    // Optimistic updating
-    isFavorite = !isFavorite;
-    notifyListeners();
-
-    try {
-      final response = await http.patch('$PRODUCTS_URL/$id.json',
-          body: json.encode({'isFavorite': isFavorite}));
-      if (response.statusCode >= 400) {
-        throw HttpException('Error updating favorite status');
-      }
-    } catch (error) {
-      isFavorite = oldStatus;
-      notifyListeners();
-      throw error;
-    }
-  }
-
   Product copyWith({
     String id,
     String title,
@@ -79,5 +42,43 @@ class Product with ChangeNotifier {
     );
 
     return prod;
+  }
+
+  Product.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        title = json['title'],
+        description = json['description'],
+        price = json['price'],
+        imageUrl = json['imageUrl'];
+  // isFavorite = json['isFavorite'];
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'price': price,
+        'imageUrl': imageUrl,
+        // 'isFavorite': isFavorite,
+      };
+
+  Future<void> toggleFavorite(String token, String userId) async {
+    final oldStatus = isFavorite;
+
+    // Optimistic updating
+    isFavorite = !isFavorite;
+    notifyListeners();
+
+    final url =
+        'https://academind-flutter-shop.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+    try {
+      final response = await http.put(url, body: json.encode(isFavorite));
+      if (response.statusCode >= 400) {
+        throw HttpException('Error updating favorite status');
+      }
+    } catch (error) {
+      isFavorite = oldStatus;
+      notifyListeners();
+      throw error;
+    }
   }
 }

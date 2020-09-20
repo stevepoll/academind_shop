@@ -3,12 +3,12 @@ import 'package:academind_shop/providers/products.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ManageProductItem extends StatelessWidget {
+class ManageProductTile extends StatelessWidget {
   final String id;
   final String title;
   final String imageUrl;
 
-  ManageProductItem(this.id, this.title, this.imageUrl);
+  ManageProductTile(this.id, this.title, this.imageUrl);
 
   @override
   Widget build(BuildContext context) {
