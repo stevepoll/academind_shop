@@ -1,3 +1,4 @@
+import 'package:academind_shop/helpers/custom_route.dart';
 import 'package:academind_shop/pages/orders_page.dart';
 import 'package:academind_shop/pages/manage_products_page.dart';
 import 'package:academind_shop/providers/auth.dart';
@@ -26,6 +27,8 @@ class AppDrawer extends StatelessWidget {
             title: Text('Orders'),
             onTap: () =>
                 Navigator.pushReplacementNamed(context, OrdersPage.routeName),
+            // Navigator.pushReplacement(
+            //     context, CustomRoute(builder: (ctx) => OrdersPage())),
           ),
           Divider(),
           ListTile(

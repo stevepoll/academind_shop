@@ -1,3 +1,4 @@
+import 'package:academind_shop/helpers/custom_route.dart';
 import 'package:academind_shop/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +52,10 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.purple,
             accentColor: Colors.deepOrange,
             fontFamily: 'Lato',
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: CustomPageTransitionBuilder(),
+              TargetPlatform.iOS: CustomPageTransitionBuilder(),
+            }),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           home: auth.isLoggedIn
